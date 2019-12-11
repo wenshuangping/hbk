@@ -1,0 +1,88 @@
+server:
+  port: 9999
+  tomcat:
+    max-connections:  1000 # 最大连接数
+    accept-count: 1500  #
+  connection-timeout: 60000   # 连接超时设置
+
+# ribbon set connection  timeout and  readtimeout
+ribbon:
+  ReadTimeout: 60000
+  ConnectTimeout: 60000
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 120000
+
+spring:
+  #上传文件大小配置
+  http:
+    multipart:
+      maxFileSize: 50Mb
+      maxRequestSize: 50Mb
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password:
+
+zuul:
+  #  sensitive-headers:
+  #  add-host-header: true
+  retryable: false    #关闭重试
+  ignoredServices: '*'
+  host:
+    connect-timeout-millis: 60000
+    socket-timeout-millis: 60000
+  ratelimit:
+    key-prefix: pig-ratelimite
+    enabled: true
+    repository: REDIS
+    behind-proxy: true
+    policies:
+      pig-upms-service:
+        limit: 100
+        quota: 100
+        refresh-interval: 3
+
+security:
+  auth:
+    server: http://127.0.0.1:3000 #认证服务器地址
+  encode:
+    key: '1234567887654321' #必须16位
+  validate:
+    code: false
+    preview: true
+  sessions: stateless
+  oauth2:
+    client:
+      client-id: pig
+      client-secret: pig
+      grant-type: password
+      scope: server
+      access-token-uri: ${security.auth.server}/oauth/token
+    resource:
+      jwt:
+        key-uri: ${security.auth.server}/oauth/token_key #解析jwt令牌所需要密钥的地址
+
+ignore:
+  urls:
+  #---------------------------auth服务---------------------------------------
+  - /auth/authentication/removeToken  # 退出系统：翼米助手，翼米后台，翼米网厅
+  #----------------------------admin 服务----------------------------------------
+  - /admin/code/*         #验证码11
+  - /admin/smsCode/**     #验证码11
+  #------------------------------gateway 服务------------------------------------------
+  - /zl/login  #后端:用户名，密码登陆
+  - /zl/mobile #后端: 手机号登陆
+  - /business/login #客户经理|商户:用户名，密码登陆
+  - /business/mobile #客户经理|商户:手机号登陆
+  - /customer/login #客户:用户名，密码登陆
+  - /customer/mobile #客户:手机号登陆
+  - /customer/third  #客户：微信登陆
+  - /doRefreshToken  #刷新token
+  clients:
+  - app

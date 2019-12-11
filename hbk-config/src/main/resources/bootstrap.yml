@@ -1,0 +1,60 @@
+server:
+  port: 4001
+
+spring:
+  application:
+    name: hbk-config-server
+  management:
+    security:
+      enabled: false
+  endpoints:
+    health:
+      sensitive: false
+
+---
+spring:
+  profiles: localhost
+  cloud:
+    config:
+      server:
+         native:
+           searchLocations: classpath:/hbk-config
+eureka:
+  instance:
+    prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 5
+    lease-expiration-duration-in-seconds: 20
+  client:
+    serviceUrl:
+      defaultZone: http://hbk:hbk6666@127.0.0.1:1025/eureka
+    registry-fetch-interval-seconds: 10
+server:
+  tomcat:
+    max-connections:  1000 # 最大连接数
+    accept-count: 1500  #
+  connection-timeout: PT300S   # 连接超时设置
+
+---
+spring:
+  profiles: prd
+  cloud:
+    config:
+      server:
+        native:
+          search-locations: /data/cloud/hbk-config
+      retry:
+        initial-interval: 3000
+        multiplier: 1.5
+        max-interval: 20000
+        max-attempts: 6
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    serviceUrl:
+      defaultZone: http://hbk:hbk6666@192.168.2.12:1025/eureka
+server:
+  tomcat:
+    max-connections:  1000 # 最大连接数
+    accept-count: 1500  #
+  connection-timeout: PT300S   # 连接超时设置

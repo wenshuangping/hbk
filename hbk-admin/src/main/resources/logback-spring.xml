@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration debug="false" scan="false">
+    <springProperty scop="context" name="spring.application.name" source="spring.application.name" defaultValue="hbk-admin"/>
+    <property name="log.path" value="logs/${spring.application.name}"/>
+
+    <!--定义配置项,控制台输出-->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{MM-dd HH:mm:ss.SSS} %-5level [%logger{50}] - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <!-- Log file debug output -->
+    <appender name="debug" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.path}/debug.log</file>
+        <!--级别过滤器.如果日志级别等于配置级别,进行针对处理-->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>DEBUG</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/%d{yyyy-MM}/debug.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxFileSize>50MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%date [%thread] %-5level [%logger{50}] %file:%line - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!--定义配置项-滚动输出-->
+    <appender name="info" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--设置固定的当日的文件名,可以不固定-->
+        <file>${log.path}/info.log</file>
+        <!--级别过滤器.如果日志级别等于配置级别,进行针对处理-->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <!--滚动策略-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!--设置路径和文件名-->
+            <fileNamePattern>${log.path}/%d{yyyy-MM}/info.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxFileSize>50MB</maxFileSize>
+            <!--超过30天的log文件会被自动删除-->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <!--日志格式配置-->
+        <encoder><!-- 必须指定，否则不会往文件输出内容 -->
+            <!--<pattern>%d{ABSOLUTE} %5p %c{1}:%L - %m%n</pattern>-->
+            <pattern>%date [%thread] %-5level [%logger{50}] %file:%line - %msg%n</pattern>
+        </encoder>
+        <!--保证是添加而不会覆盖原日志-->
+        <append>false</append>
+        <!--压缩相关,注释掉也没事-->
+        <!--<prudent>false</prudent>-->
+    </appender>
+
+    <!--定义配置项-滚动输出-->
+    <appender name="warn" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--设置固定的当日的文件名,可以不固定-->
+        <file>${log.path}/warn.log</file>
+        <!--级别过滤器.如果日志级别等于配置级别,进行针对处理-->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>WARN</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <!--滚动策略-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!--设置路径和文件名-->
+            <fileNamePattern>${log.path}/%d{yyyy-MM}/warn.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxFileSize>50MB</maxFileSize>
+            <!--超过30天的log文件会被自动删除-->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <!--日志格式配置-->
+        <encoder><!-- 必须指定，否则不会往文件输出内容 -->
+            <!--<pattern>%d{ABSOLUTE} %5p %c{1}:%L - %m%n</pattern>-->
+            <pattern>%date [%thread] %-5level [%logger{50}] %file:%line - %msg%n</pattern>
+        </encoder>
+        <!--保证是添加而不会覆盖原日志-->
+        <append>false</append>
+        <!--压缩相关,注释掉也没事-->
+        <!--<prudent>false</prudent>-->
+    </appender>
+
+    <!-- Log file error output -->
+    <appender name="error" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.path}/error.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/%d{yyyy-MM}/error.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxFileSize>50MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%date [%thread] %-5level [%logger{50}] %file:%line - %msg%n</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+    </appender>
+
+    <!-- Level:   ERROR, WARN, INFO, DEBUG or TRACE -->
+    <springProfile name="localhost">
+        <!-- 打印sql语句到控制台 -->
+        <logger name="com.mika.admin.mapper" level="debug" additivity="false">
+            <appender-ref ref="console"/>
+            <appender-ref ref="debug" />
+        </logger>
+        <logger name="com.mika.admin.service.impl.WxAuthServiceImpl" level="debug" additivity="false">
+            <appender-ref ref="console"/>
+            <appender-ref ref="debug" />
+        </logger>
+        <logger name="com.mika.admin.feign.handler" level="debug" additivity="false">
+            <appender-ref ref="console"/>
+            <appender-ref ref="debug"/>
+        </logger>
+        <root level="INFO">
+            <appender-ref ref="console"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="dev">
+        <!-- 打印sql语句到控制台 -->
+        <logger name="com.mika.admin.mapper" level="debug" additivity="false">
+            <appender-ref ref="console"/>
+            <appender-ref ref="debug" />
+        </logger>
+        <logger name="com.mika.admin.service.impl.WxAuthServiceImpl" level="debug" additivity="false">
+            <appender-ref ref="console"/>
+            <appender-ref ref="debug" />
+        </logger>
+        <logger name="com.mika.admin.feign.handler" level="debug" additivity="false">
+            <appender-ref ref="console"/>
+            <appender-ref ref="debug"/>
+        </logger>
+        <root level="INFO">
+            <appender-ref ref="console"/>
+            <appender-ref ref="debug"/>
+            <appender-ref ref="info"/>
+            <appender-ref ref="warn"/>
+            <appender-ref ref="error"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="test">
+        <!-- 打印sql语句到控制台 -->
+        <logger name="com.mika.admin.mapper" level="debug" additivity="false">
+            <appender-ref ref="console"/>
+            <appender-ref ref="debug" />
+        </logger>
+        <logger name="com.mika.admin.feign.handler" level="debug" additivity="false">
+            <appender-ref ref="console"/>
+            <appender-ref ref="debug"/>
+        </logger>
+        <logger name="com.mika.admin.service.impl.WxAuthServiceImpl" level="debug" additivity="false">
+            <appender-ref ref="console"/>
+            <appender-ref ref="debug" />
+        </logger>
+        <root level="INFO">
+            <appender-ref ref="console"/>
+            <appender-ref ref="debug" />
+            <appender-ref ref="info"/>
+            <appender-ref ref="warn"/>
+            <appender-ref ref="error"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="prd">
+        <!-- 打印sql语句到控制台 -->
+        <logger name="com.mika.admin.mapper" level="debug" additivity="false">
+            <appender-ref ref="console"/>
+            <appender-ref ref="debug" />
+        </logger>
+        <logger name="com.mika.admin.service.impl.WxAuthServiceImpl" level="debug" additivity="false">
+            <appender-ref ref="console"/>
+            <appender-ref ref="debug" />
+        </logger>
+        <logger name="com.mika.admin.feign.handler" level="debug" additivity="false">
+            <appender-ref ref="console"/>
+            <appender-ref ref="debug"/>
+        </logger>
+        <root level="INFO">
+            <appender-ref ref="console"/>
+            <appender-ref ref="debug"/>
+            <appender-ref ref="info"/>
+            <appender-ref ref="warn"/>
+            <appender-ref ref="error"/>
+        </root>
+    </springProfile>
+</configuration>
+
+

@@ -1,0 +1,52 @@
+server:
+  port: 3000
+  tomcat:
+    max-connections:  1000 # 最大连接数
+    accept-count: 1500  #
+  connection-timeout: 60000   # 连接超时设置
+
+# ribbon set connection  timeout and  readtimeout
+ribbon:
+  ReadTimeout: 60000
+  ConnectTimeout: 60000
+
+# datasoure默认使用JDBC
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    username: wsp
+    password: 123456
+    url: jdbc:mysql://127.0.0.1:3306/mika_admin?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false
+  freemarker:
+    allow-request-override: false
+    allow-session-override: false
+    cache: true
+    charset: UTF-8
+    check-template-location: true
+    content-type: text/html
+    enabled: true
+    expose-request-attributes: false
+    expose-session-attributes: false
+    expose-spring-macro-helpers: true
+    prefer-file-system-access: true
+    suffix: .ftl
+    template-loader-path: classpath:/templates/
+  #redis
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password:
+
+ignore:
+  urls:
+  - /authentication/**
+  - /**/*.css
+  - /social
+  - /signin
+  - /signup
+  - /info
+  - /health
+  - /metrics/**
+  - /loggers/**
+  - /mobile/token
+
