@@ -50,7 +50,7 @@
 
     <!--公共依赖 -->
     <dependencies>
-        <!--注册中心 -->
+        <!--注册中心客户端 -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
